@@ -164,3 +164,37 @@ export const demoRequest = createRequest<App.Service.DemoResponse>(
     }
   }
 );
+
+export const maycurRequest = createRequest<any>(
+  {
+    baseURL: otherBaseURL.maycur
+  },
+  {
+    async onRequest(config) {
+      const { headers } = config;
+      // Default to form encoding; callers can override
+      // eslint-disable-next-line unicorn/prefer-logical-operator-over-ternary
+      headers['Content-Type'] ||= 'application/x-www-form-urlencoded;charset=UTF-8';
+      // eslint-disable-next-line unicorn/prefer-logical-operator-over-ternary
+      headers.Accept ||= 'application/json';
+      return config;
+    },
+    // Treat HTTP 2xx as success and forward raw data
+    isBackendSuccess() {
+      return true;
+    },
+    async onBackendFail() {
+      // Not used for maycur openapi; return undefined to fallthrough
+    },
+    transformBackendResponse(response) {
+      return response.data;
+    },
+    onError(error) {
+      let message = error.message;
+      if (error.code === BACKEND_ERROR_CODE) {
+        message = (error.response?.data as any)?.message || message;
+      }
+      window.$message?.error(message);
+    }
+  }
+);

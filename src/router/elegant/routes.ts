@@ -74,5 +74,16 @@ export const generatedRoutes: GeneratedRoute[] = [
       constant: true,
       hideInMenu: true
     }
+  },
+  {
+    name: 'maycur-token',
+    path: '/maycur-token',
+    component: 'layout.base$view.maycur-token',
+    meta: {
+      title: 'Maycur Token',
+      i18nKey: 'route.maycur-token',
+      icon: 'mdi:key',
+      order: 2
+    }
   }
 ];
