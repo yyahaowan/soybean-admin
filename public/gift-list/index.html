@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生日礼物清单</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- 创建清单页面 -->
+      <div id="createView" class="view">
+        <div class="header">
+          <h1>🎁 创建生日礼物清单</h1>
+          <p class="subtitle">为你的朋友创建一个特别的生日礼物愿望清单</p>
+        </div>
+
+        <form id="createForm" class="form-card">
+          <div class="form-group">
+            <label for="listTitle">
+              清单标题
+              <span class="required">*</span>
+            </label>
+            <input type="text" id="listTitle" placeholder="例如：小明的生日礼物清单" required />
+          </div>
+
+          <div class="form-group">
+            <label for="celebrantName">
+              寿星姓名
+              <span class="required">*</span>
+            </label>
+            <input type="text" id="celebrantName" placeholder="例如：小明" required />
+          </div>
+
+          <div class="form-group">
+            <label for="birthdayDate">
+              生日日期
+              <span class="required">*</span>
+            </label>
+            <input type="date" id="birthdayDate" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary">创建清单</button>
+        </form>
+
+        <div class="footer-link">
+          <p>
+            已有清单？
+            <a href="#" id="viewExistingLink">查看现有清单</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- 清单展示/编辑页面 -->
+      <div id="listView" class="view hidden">
+        <div class="header">
+          <button id="backToCreate" class="btn-back">← 返回</button>
+          <h1 id="listTitle"></h1>
+          <div class="list-info">
+            <p>
+              <strong>寿星：</strong>
+              <span id="listCelebrant"></span>
+            </p>
+            <p>
+              <strong>生日：</strong>
+              <span id="listDate"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- 分享链接卡片 -->
+        <div class="share-card">
+          <div class="share-content">
+            <label>分享链接：</label>
+            <div class="share-input-group">
+              <input type="text" id="shareLink" readonly />
+              <button id="copyLinkBtn" class="btn btn-secondary">复制</button>
+            </div>
+            <p class="share-hint">将此链接分享给朋友，让他们认领礼物</p>
+          </div>
+        </div>
+
+        <!-- 创建者专属：添加礼物表单 -->
+        <div id="addGiftSection" class="form-card hidden">
+          <h2>添加礼物</h2>
+          <form id="addGiftForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="giftName">礼物名称</label>
+                <input type="text" id="giftName" placeholder="例如：蓝牙耳机" />
+              </div>
+              <div class="form-group">
+                <label for="giftPrice">价格（元）</label>
+                <input type="number" id="giftPrice" placeholder="例如：299" min="0" step="0.01" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="giftLink">购买链接</label>
+              <input type="url" id="giftLink" placeholder="例如：https://example.com/product" />
+            </div>
+            <div class="form-group">
+              <label for="giftNote">备注</label>
+              <textarea id="giftNote" placeholder="例如：黑色款式" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">添加礼物</button>
+          </form>
+        </div>
+
+        <!-- 礼物列表 -->
+        <div class="gifts-section">
+          <h2>礼物清单</h2>
+          <div id="giftsList" class="gifts-list">
+            <!-- 动态生成礼物卡片 -->
+          </div>
+          <div id="emptyState" class="empty-state hidden">
+            <p>暂无礼物，快添加一些吧！</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 认领礼物对话框 -->
+      <div id="claimModal" class="modal hidden">
+        <div class="modal-content">
+          <h2>认领礼物</h2>
+          <p id="claimGiftName" class="modal-gift-name"></p>
+          <form id="claimForm">
+            <div class="form-group">
+              <label for="claimerName">
+                你的姓名
+                <span class="required">*</span>
+              </label>
+              <input type="text" id="claimerName" placeholder="请输入你的姓名" required />
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="cancelClaim" class="btn btn-secondary">取消</button>
+              <button type="submit" class="btn btn-primary">确认认领</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 编辑礼物对话框 -->
+      <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+          <h2>编辑礼物</h2>
+          <form id="editGiftForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editGiftName">礼物名称</label>
+                <input type="text" id="editGiftName" placeholder="例如：蓝牙耳机" />
+              </div>
+              <div class="form-group">
+                <label for="editGiftPrice">价格（元）</label>
+                <input type="number" id="editGiftPrice" placeholder="例如：299" min="0" step="0.01" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="editGiftLink">购买链接</label>
+              <input type="url" id="editGiftLink" placeholder="例如：https://example.com/product" />
+            </div>
+            <div class="form-group">
+              <label for="editGiftNote">备注</label>
+              <textarea id="editGiftNote" placeholder="例如：黑色款式" rows="2"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="cancelEdit" class="btn btn-secondary">取消</button>
+              <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 通知提示 -->
+      <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
